@@ -19,4 +19,5 @@
 # in question would have to in some way have a variable intake design. i.e. The intake's structure would need to
 # morph mid-flight in order to account for the differences in the fluid dynamics at higher mach numbers for this 
 # simulation to be fully applicable. I can conceive of ways that would work, but practically I have never heard of 
-# any such designs being used or even developed. 
+# any such designs being in common use or atleast not to the extent that it approaches the capabilities of an 
+# idealized intake. 
