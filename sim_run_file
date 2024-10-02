@@ -1,5 +1,5 @@
 # This is a simplified simulation for lifting body aircraft powered by RAM/SCRAM jet engines(super and hypersonic
-# air breathing engine designs). 
+# air breathing engine designs). Drag, lift, and various craft specific properties are simplified signifcantly.
 import numpy as np
 import matplotlib.pyplot as plt
 
