@@ -128,6 +128,8 @@ def lift_function(air_density, v_horizontal, lifting_area):
 # Function to calculate acceleration
 def acceleration_function(state, y, mass, lifting_area, intake_area):
     v_horizontal, v_vertical = state
+    thrust_horizontal_mult = v_horizontal / (np.sqrt((v_horizontal ** 2) + (v_vertical ** 2)))
+    thrust_vertical_mult = v_vertical / (np.sqrt((v_vertical ** 2) + (v_horizontal ** 2)))
     air_density = air_density_func(y)
 
     # Calculate thrust
@@ -136,6 +138,7 @@ def acceleration_function(state, y, mass, lifting_area, intake_area):
     lift = lift_function(air_density, v_horizontal, lifting_area)
 
     # Calculate drag
+    # Simple cross-sectional drag only
     drag_coefficient = 0.025
     cross_sectional_area = 0.5 * np.pi * (lifting_area / 4.5) ** 2  # Possibly the most extreme simplification I've made
     drag_horizontal = 0.5 * drag_coefficient * air_density * cross_sectional_area * v_horizontal ** 2
@@ -145,10 +148,10 @@ def acceleration_function(state, y, mass, lifting_area, intake_area):
     gravity_force = mass * g
 
     # Calculate horizontal acceleration ignoring lift's effect in the horizontal
-    a_horizontal = (T - drag_horizontal) / mass
+    a_horizontal = (T * thrust_horizontal_mult - drag_horizontal) / mass
 
     # Calculate vertical acceleration
-    a_vertical = (lift - gravity_force - drag_vertical) / mass
+    a_vertical = (T * thrust_vertical_mult + lift - gravity_force - drag_vertical) / mass
 
     return a_horizontal, a_vertical, T, mass_flow_rate_of_fuel, delta_mass
 
