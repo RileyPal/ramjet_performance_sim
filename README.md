@@ -1,4 +1,5 @@
 # ramjet_performance_sim
+# In order to run this import the sim_run_file to a IDE like PyCharm that has a python interpreter and ensure you have the used numpy and matplot lib packages installed aswell.
 # This is a simplified simulation for lifting body aircraft powered by RAM/SCRAM jet engines(super and hypersonic
 # air breathing engine designs). The fact that these kinds of engines can achieve thrust outputs on par with traditional
 # rocket propulsion technology while also not requiring onboard oxidizer makes them a possibly more efficient option for
