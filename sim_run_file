@@ -208,7 +208,7 @@ def plot_results(time_values, acceleration_values, velocity_values, position_val
     plt.plot(time_values, position_values[:, 0])
     plt.xlabel('Time (s)')
     plt.ylabel('Position (m)')
-    plt.title('Horizontal Position vs Time')
+    plt.title('Ground distance traveled vs Time')
     plt.grid()
 
     plt.subplot(4, 2, 7)
