@@ -10,7 +10,7 @@ M = 5.972e24     # Mass of Earth in kg
 R = 6378 * 1000  # Radius of Earth in meters
 lift_coefficient = 0.2  # Lift coefficient: what research I could find suggests max for this type of aircraft is .4
 x0 = 0.0  # Start positions set to zero meters
-y0 = 0.0  #
+y0 = 0.0
 
 # Time parameters
 dt = 0.01  # Time step size
@@ -129,8 +129,8 @@ def lift_function(air_density, v_horizontal, lifting_area):
 # Function to calculate acceleration
 def acceleration_function(state, y, mass, lifting_area, intake_area):
     v_horizontal, v_vertical = state
-    thrust_horizontal_mult = v_horizontal / (np.sqrt((v_horizontal ** 2) + (v_vertical ** 2)))
-    thrust_vertical_mult = v_vertical / (np.sqrt((v_vertical ** 2) + (v_horizontal ** 2)))
+    horizontal_mult = v_horizontal / (np.sqrt((v_horizontal ** 2) + (v_vertical ** 2)))
+    vertical_mult = v_vertical / (np.sqrt((v_vertical ** 2) + (v_horizontal ** 2)))
     air_density = air_density_func(y)
 
     # Calculate thrust
@@ -149,10 +149,10 @@ def acceleration_function(state, y, mass, lifting_area, intake_area):
     gravity_force = mass * g
 
     # Calculate horizontal acceleration ignoring lift's effect in the horizontal (would include for more detailed sims)
-    a_horizontal = (T * thrust_horizontal_mult - drag_horizontal) / mass
+    a_horizontal = (T * horizontal_mult - drag_horizontal) / mass
 
     # Calculate vertical acceleration
-    a_vertical = (T * thrust_vertical_mult + lift - gravity_force - drag_vertical) / mass
+    a_vertical = (T * vertical_mult + lift * horizontal_mult - gravity_force - drag_vertical) / mass
 
     return a_horizontal, a_vertical, T, mass_flow_rate_of_fuel, delta_mass
 
@@ -191,7 +191,8 @@ def plot_results(time_values, acceleration_values, velocity_values, position_val
 
     plt.subplot(4, 2, 4)
     plt.plot(time_values, velocity_values[:, 0])
-    plt.xlabel('Time (s)')
+    plt.plot(time_values, 460 + velocity_values[:, 0]) # 460m/s is earths rotation, assume launch direction aligns
+    plt.xlabel('Time (s) Orange:Orbital vel,Blu:Speed over ground')
     plt.ylabel('Velocity (m/s)')
     plt.title('Horizontal Velocity vs Time')
     plt.grid()
