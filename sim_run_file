@@ -8,7 +8,7 @@ g0 = 9.81  # Gravitational constant (m/s^2)
 G = 6.67430e-11  # Gravitational constant in m^3 kg^-1 s^-2
 M = 5.972e24     # Mass of Earth in kg
 R = 6378 * 1000  # Radius of Earth in meters
-lift_coefficient = 0.2  # Lift coefficient: what research I could find suggests max for this type of aircraft is .4
+lift_coefficient = 0.2  # Lift coefficient: what research I could find suggests max for this type of aircraft ~0.4
 x0 = 0.0  # Start positions set to zero meters
 y0 = 0.0
 
