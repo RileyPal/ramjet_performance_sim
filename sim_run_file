@@ -1,5 +1,5 @@
 # This is a simplified simulation for lifting body aircraft powered by RAM/SCRAM jet engines(super and hypersonic
-# air breathing engine designs). Drag, lift, and various craft specific properties are simplified signifcantly.
+# air breathing engine designs). Drag, lift, and various craft specific properties are simplified significantly.
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -165,7 +165,7 @@ def plot_results(time_values, acceleration_values, velocity_values, position_val
     print("accel:", acceleration_values)
     print("vel:", velocity_values)
     print("x,y:", position_values)
-    print("mass(negative value means you needed more mass than your entire intial crafts mass):", mass0 - np.cumsum(delta_mass_values))
+    print("mass(negative value means you needed more mass than your entire initial crafts mass):", mass0 - np.cumsum(delta_mass_values))
     print("Tons of onboard oxidizer saved:", (17.2 * np.cumsum(delta_mass_values))/1000)
     plt.figure(figsize=(12, 12))
 
