@@ -85,8 +85,9 @@ def get_initial_conditions():
             "Enter the lifting area (m^2) ex: Lifting body designs like the x-24 which the drag calculations "
             "are based on had 31 m^2: "))
         intake_area = float(input(
-            "Enter the intake area (m^2) *realistically should be somewhere between .1-1.5 based on scaling nasa's "
-            "xf43 experimental ramjet craft to size of the space shuttle but is purely an estimate*: "))
+            "Enter the intake area (m^2) *realistically should be somewhere between .2-2 based on scaling nasa's "
+            "xf43 experimental ramjet craft to size of the space shuttle but is purely an estimate lower than .2 tends "
+            "to break the simulation*: "))
     except ValueError:
         print("Invalid input. Please enter numeric values.")
         return get_initial_conditions()
@@ -167,6 +168,8 @@ def plot_results(time_values, acceleration_values, velocity_values, position_val
     print("x,y:", position_values)
     print("mass(negative value means you needed more mass than your entire initial crafts mass):", mass0 - np.cumsum(delta_mass_values))
     print("Tons of onboard oxidizer saved:", (17.2 * np.cumsum(delta_mass_values))/1000)
+    print("Use horizontal velocity associated with time (s) that resulted in positive vertical velocity as launch speed"
+          " if it results indicate vertical hits negative.")
     plt.figure(figsize=(12, 12))
 
     plt.subplot(4, 2, 1)
