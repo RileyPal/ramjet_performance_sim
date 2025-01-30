@@ -1,5 +1,6 @@
-# This is a simplified simulation for lifting body aircraft powered by RAM/SCRAM jet engines(super and hypersonic
-# air breathing engine designs). Drag, lift, and various craft specific properties are simplified significantly.
+# This is a simplified simulation for craft designed without aerodynamic lift in mind i.e. rockets/missiles
+# powered by RAM/SCRAM jet engines(super and hypersonic air breathing engine designs).
+# Drag and various craft specific properties are simplified significantly.
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -8,7 +9,6 @@ g0 = 9.81  # Gravitational constant (m/s^2)
 G = 6.67430e-11  # Gravitational constant in m^3 kg^-1 s^-2
 M = 5.972e24     # Mass of Earth in kg
 R = 6378 * 1000  # Radius of Earth in meters
-lift_coefficient = 0.2  # Lift coefficient: what research I could find suggests max for this type of aircraft ~0.4
 x0 = 0.0  # Start positions set to zero meters
 y0 = 0.0
 
@@ -29,7 +29,7 @@ data_table = {
 def main():
 
     # Get initial conditions
-    v0_horizontal, v0_vertical, x, y, mass0, lifting_area, intake_area = get_initial_conditions()
+    v0_horizontal, v0_vertical, x, y, mass0, radius, intake_area = get_initial_conditions()
 
     # Initialize arrays to store results
     time_values = np.arange(0, t_max, dt)
@@ -46,7 +46,7 @@ def main():
     for i, t in enumerate(time_values):
         # Calculate acceleration and fuel consumption
         a_horizontal, a_vertical, T, mass_flow_rate_of_fuel, delta_mass = acceleration_function(state, y, mass,
-                                                                                                lifting_area,
+                                                                                                radius,
                                                                                                 intake_area)
 
         # Store acceleration
@@ -81,10 +81,10 @@ def get_initial_conditions():
             "Enter the initial velocity magnitude (m/s) ex: 100 m/s would be the minimum to be within the edge of "
             "believability for Ramjet operation: "))
         angle_of_attack = float(input("Enter the angle of attack (degrees): "))
-        lifting_area = float(input(
-            "Enter the lifting area (m^2): "))
-        intake_area = float(input(
-            "Enter the intake area (m^2): "))
+        radius = float(input("Enter the radius of the cross section presented in direction of travel(m): "))
+        area_of_sec = float(input("Enter the percent of cross sectional area taken up by intake (%): "))
+        intake_area = (area_of_sec/100) * np.pi * radius**2
+        print(intake_area, "(m^2)")
     except ValueError:
         print("Invalid input. Please enter numeric values.")
         return get_initial_conditions()
@@ -94,7 +94,7 @@ def get_initial_conditions():
     x = 0.0  # meters (m)
     y = 0.0  # meters above sea level (m)
 
-    return v0_horizontal, v0_vertical, x, y, mass0, lifting_area, intake_area
+    return v0_horizontal, v0_vertical, x, y, mass0, radius, intake_area
 
 
 # Function to calculate air density
@@ -118,14 +118,9 @@ def thrust_function(air_density, velocity, intake_area):  # This could be modifi
     return T, mass_flow_rate_of_fuel, delta_mass
 
 
-# Function to calculate lift
-def lift_function(air_density, v_horizontal, lifting_area):
-    lift = 0.5 * lift_coefficient * air_density * lifting_area * v_horizontal ** 2
-    return lift  # lift in Newtons (N)
-
 
 # Function to calculate acceleration
-def acceleration_function(state, y, mass, lifting_area, intake_area):
+def acceleration_function(state, y, mass, radius, intake_area):
     v_horizontal, v_vertical = state
     # Avoid division by zero when computing unit vectors
     denominator = np.sqrt((v_horizontal ** 2) + (v_vertical ** 2)) + 1e-8
@@ -135,13 +130,11 @@ def acceleration_function(state, y, mass, lifting_area, intake_area):
 
     # Calculate thrust
     T, mass_flow_rate_of_fuel, delta_mass = thrust_function(air_density, v_horizontal, intake_area)
-    # Calculate lift
-    lift = lift_function(air_density, v_horizontal, lifting_area)
 
     # Calculate drag
     # Simple cross-sectional drag only (keeps us from needing to define more about the hull design)
     drag_coefficient = 0.025
-    cross_sectional_area = 0.5 * np.pi * (lifting_area / 4.5) ** 2  # Possibly the most extreme simplification I've made
+    cross_sectional_area =  np.pi * radius ** 2  # Possibly the most extreme simplification I've made
     drag_horizontal = 0.5 * drag_coefficient * air_density * cross_sectional_area * v_horizontal ** 2
     drag_vertical = 0.5 * drag_coefficient * air_density * cross_sectional_area * v_vertical ** 2
     # Calculate gravitational force
@@ -152,7 +145,7 @@ def acceleration_function(state, y, mass, lifting_area, intake_area):
     a_horizontal = (T * horizontal_mult - drag_horizontal) / mass
 
     # Calculate vertical acceleration
-    a_vertical = (T * vertical_mult + lift * horizontal_mult - gravity_force - drag_vertical) / mass
+    a_vertical = (T * vertical_mult - gravity_force - drag_vertical) / mass
 
     return a_horizontal, a_vertical, T, mass_flow_rate_of_fuel, delta_mass
 
