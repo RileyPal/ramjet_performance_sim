@@ -76,6 +76,8 @@ def main():
 # Function to get initial conditions
 def get_initial_conditions():
     try:
+        print("Simulation is highly input sensitive, restrictions are not built-in. As such expect inputs you haven't "
+              "thought through to not simulate correctly or at all.")
         mass0 = float(input("Enter the initial mass of the craft (kg): "))
         velocity_mag = float(input(
             "Enter the initial velocity magnitude (m/s) ex: 100 m/s would be the minimum to be within the edge of "
