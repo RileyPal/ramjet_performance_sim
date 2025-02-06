@@ -14,7 +14,9 @@
  problem there is drag scales quadratically with velocity meaning we get diminishing returns, so why not take advantage
  of the atmosphere? With air breathing engines like RAM and SCRAM jet engines we essentially turn that square term of
  drag into something closer to a power of 1.5 or maybe even lower since these engines allow us to get increasing thrust
- output for every bit faster we go in the atmosphere.
+ output for every bit faster we go in the atmosphere. Included are simpler alternatives to the main sim file that focus
+ on craft that are not designed with aerodynamic lift in mind which makes allows for more isolated evaluation of the
+ engines contribution to a crafts flight path.
 # Caveats:
  While I was unable to encapsulate the entirety of the nuance to this kind of engine, this is merely meant to be a
  way to visualize the viability and efficacy of such propulsion methods. In truth the biggest inaccuracy in terms of
