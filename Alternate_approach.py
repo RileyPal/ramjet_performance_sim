@@ -64,7 +64,10 @@ def state_function(state, dt):
     mass_flow_rate_of_oxygen = 0.232 * air_density * intake_area * velocity_mag  # since we are using air density the
     # oxygen content of the atmosphere must be in terms of wt% so instead of .21 we use.23
     methane_to_oxygen_ratio = 1/17.2 # ~17.2 kg of oxygen for every kg of methane
-    mass_flow_rate_of_fuel = methane_to_oxygen_ratio * mass_flow_rate_of_oxygen  # fuel consumed per second (Kg/s)
+    if mass <= 200:
+        mass_flow_rate_of_fuel = 0  # Stop fuel consumption when mass is below 200 kg
+    else:
+        mass_flow_rate_of_fuel = methane_to_oxygen_ratio * mass_flow_rate_of_oxygen  # fuel consumed per second (Kg/s)
     thrust_mag = (mass_flow_rate_of_fuel * 9.81) * 3200
     drag_mag = 0.5 * .025 * air_density * velocity_mag ** 2 * np.pi * (radius ** 2)  # Drag calculation
 
