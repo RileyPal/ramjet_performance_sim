@@ -16,7 +16,7 @@ def get_air_density(altitude):
 
 def get_initial_conditions():
     try:
-        mass0 = float(input("Enter the initial mass of the craft (kg): "))
+        mass0 = float(input("Enter the initial mass of the craft, 200 kg minimum mass above this is considered fuel available (kg): "))
         velocity_mag = float(input(
             "Enter the initial velocity magnitude (m/s) ex: 100 m/s would be the minimum to be within the edge of "
             "believability for Ramjet operation: "))
