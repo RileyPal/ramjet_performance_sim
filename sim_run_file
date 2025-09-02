@@ -14,7 +14,7 @@ y0 = 0.0
 
 # Time parameters
 dt = 0.01  # Time step size
-t_max = 100  # Maximum time
+t_max = 1000  # Maximum time
 
 # Air density vs altitude data table
 data_table = {
@@ -107,17 +107,22 @@ def air_density_func(y):
 
 
 # Function to calculate thrust
-def thrust_function(air_density, velocity, intake_area):  # This could be modified to switch to a traditional rocket
+def thrust_function(air_density, velocity, intake_area, mass0):  # This could be modified to switch to a traditional rocket
     # thrust calculation once air density reaches either zero or whenever the constant thrust of a rocket engine would
     # be greater than the air breathing engine to mimic the envisioned mode switching capability from air breathing to
     # onboard oxidizer burning required of an SSTO.
     mass_flow_rate_of_oxygen = 0.232 * air_density * intake_area * velocity  # since we are using air density the
     # oxygen content of the atmosphere must be in terms of wt% so instead of .21 we use.23
     methane_to_oxygen_ratio = 1/17.2 # ~17.2 kg of oxygen for every kg of methane
-    mass_flow_rate_of_fuel = methane_to_oxygen_ratio * mass_flow_rate_of_oxygen  # fuel consumed per second (Kg/s)
+    if mass0 <= 200:
+        mass_flow_rate_of_fuel = 0  # Stop fuel consumption when mass is below 200 kg
+    else:
+        mass_flow_rate_of_fuel = methane_to_oxygen_ratio * mass_flow_rate_of_oxygen  # fuel consumed per second (Kg/s)
+    delta_mass = mass_flow_rate_of_fuel * dt  # fuel consumed per time step in Kg/.01s
+    mass = mass0 - delta_mass * dt
     T = (mass_flow_rate_of_fuel * g0) * 3200
-    delta_mass = mass_flow_rate_of_oxygen * dt  # fuel consumed per time step in Kg/.01s
-    return T, mass_flow_rate_of_fuel, delta_mass
+
+    return T, mass_flow_rate_of_fuel, delta_mass, mass
 
 
 # Function to calculate lift
@@ -136,7 +141,7 @@ def acceleration_function(state, y, mass, lifting_area, intake_area):
     air_density = air_density_func(y)
 
     # Calculate thrust
-    T, mass_flow_rate_of_fuel, delta_mass = thrust_function(air_density, v_horizontal, intake_area)
+    T, mass_flow_rate_of_fuel, delta_mass, mass = thrust_function(air_density, v_horizontal, intake_area, mass)
     # Calculate lift
     lift = lift_function(air_density, v_horizontal, lifting_area)
 
@@ -167,7 +172,7 @@ def plot_results(time_values, acceleration_values, velocity_values, position_val
     print("accel:", acceleration_values)
     print("vel:", velocity_values)
     print("x,y:", position_values)
-    print("mass(negative value means you needed more mass than your entire initial crafts mass):", mass0 - np.cumsum(delta_mass_values))
+    print("mass(200 Kg is dry mass):", mass0 - np.cumsum(delta_mass_values))
     print("Tons of onboard oxidizer saved:", (17.2 * np.cumsum(delta_mass_values))/1000)
     print("Use horizontal velocity associated with time (s) that resulted in positive vertical velocity as launch speed"
           " if it results indicate vertical hits negative.")
@@ -226,7 +231,7 @@ def plot_results(time_values, acceleration_values, velocity_values, position_val
     plt.subplot(4, 2, 8)
     plt.plot(time_values, delta_mass_values)
     plt.xlabel('Time (s)')
-    plt.ylabel('Mass (Kg/s)')
+    plt.ylabel('Consumption rate (Kg/s)')
     plt.title('Fuel consumption vs Time')
     plt.grid()
 
