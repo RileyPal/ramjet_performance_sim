@@ -91,7 +91,7 @@ def state_function(state, dt):
 initial_state = get_initial_conditions()
 dt = 0.01  # Time step
 
-time_steps = 10000
+time_steps = 1000
 trajectory = [initial_state]
 
 for _ in range(time_steps):
