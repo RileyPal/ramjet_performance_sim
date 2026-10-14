@@ -120,8 +120,9 @@ def thrust_function(air_density, velocity, intake_area, mass0):  # This could be
         mass_flow_rate_of_fuel = methane_to_oxygen_ratio * mass_flow_rate_of_oxygen  # fuel consumed per second (Kg/s)
     delta_mass = mass_flow_rate_of_fuel * dt  # fuel consumed per time step in Kg/.01s
     mass = mass0 - delta_mass * dt
-    T = (mass_flow_rate_of_fuel * g0) * 3200
-
+    T = (mass_flow_rate_of_fuel * g0) * 1500
+    # thrust here is defined as rate of fuel consumption times gravity times specific impulse which a quick google search
+    # places at ~1500-2500 seconds for this type of engine
     return T, mass_flow_rate_of_fuel, delta_mass, mass
 
 
